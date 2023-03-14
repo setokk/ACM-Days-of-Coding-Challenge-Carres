@@ -11,18 +11,18 @@ public class Carres
 
     public static void main(String[] args)
     {
-        ArrayList<ArrayList<String>> squares = getInput(args[0]);
+        var squares = getInput(args[0]);
 
 
                                 // Algorithm start //
         // Each square <String> has a list of 4 coordinates <ArrayList<String>>
         // ["x11, y11", "x12, y12", "x13, y13", "x14, y14"]
-        HashMap<String, ArrayList<String>> visitedSquaresCoords = new HashMap<>();
-        HashMap<String, Integer> squaresSizes = new HashMap<>();
+        var visitedSquaresCoords = new HashMap<String, ArrayList<String>>();
+        var squaresSizes = new HashMap<String, Integer>();
 
         for (int i = 0; i < squares.size(); i++)
         {
-            ArrayList<String> row = squares.get(i);
+            var row = squares.get(i);
 
             for (int j = 0; j < row.size(); j++)
             {
@@ -33,18 +33,18 @@ public class Carres
 
         // Sort based on square sizes (get the 3 highest)
         List<String> keys = squaresSizes
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(3).map(Map.Entry::getKey)
-                .toList();
+                    .entrySet()
+                    .stream()
+                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                    .limit(3).map(Map.Entry::getKey)
+                    .toList();
 
         // Get the three squares' coordinates and find the min
         int[] maxSquaresCoords = new int[24];
         int i = 0;
         for (String key : keys)
         {
-            ArrayList<String> coordinates = visitedSquaresCoords.get(key);
+            var coordinates = visitedSquaresCoords.get(key);
             for (String coordinate : coordinates)
             {
                 String[] splitted = coordinate.split(",");
