@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Carres
 {
@@ -24,12 +27,75 @@ public class Carres
             for (int j = 0; j < row.size(); j++)
             {
                 String cell = row.get(j);
-                addAllSquaresCoords(cell, i, j, visitedSquaresCoords, squares, squaresSizes);
+                calculateCellSquares(cell, i, j, visitedSquaresCoords, squares, squaresSizes);
             }
         }
 
-        System.out.println(visitedSquaresCoords);
-        System.out.println(squaresSizes);
+        // Sort based on square sizes (get the 3 highest)
+        List<String> keys = squaresSizes
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(3).map(Map.Entry::getKey)
+                .toList();
+
+        // Get the three squares' coordinates and find the min
+        int[] maxSquaresCoords = new int[24];
+        int i = 0;
+        for (String key : keys)
+        {
+            ArrayList<String> coordinates = visitedSquaresCoords.get(key);
+            for (String coordinate : coordinates)
+            {
+                String[] splitted = coordinate.split(",");
+                maxSquaresCoords[i] = Integer.parseInt(splitted[0]);
+                maxSquaresCoords[i+1] = Integer.parseInt(splitted[1]);
+                i = i + 2;
+            }
+        }
+
+        // Find min coordinates by calculating the distance between the three points
+        var minCoordinates = new StringBuilder("None");
+        double minDistance = 1000000;
+        for (int j = 0; j < 8; j = j + 2) // x1, y1 index
+        {
+            for (int k = 8; k < 16; k = k + 2) // x2, y2 index
+            {
+                for (int l = 16; l < 24; l = l + 2) // x3, y3 index
+                {
+                    // Difference between coordinates of the first and second square
+                    double x1_x2_diff = Math.pow((maxSquaresCoords[j] - maxSquaresCoords[k]), 2);
+                    double y1_y2_diff = Math.pow((maxSquaresCoords[j+1] - maxSquaresCoords[k+1]), 2);
+                    double D1 = Math.sqrt(x1_x2_diff + y1_y2_diff);
+
+                    // Difference between coordinates of the first and third square
+                    double x1_x3_diff = Math.pow((maxSquaresCoords[j] - maxSquaresCoords[l]), 2);
+                    double y1_y3_diff = Math.pow((maxSquaresCoords[j+1] - maxSquaresCoords[l+1]), 2);
+                    double D2 = Math.sqrt(x1_x3_diff + y1_y3_diff);
+
+                    // Difference between coordinates of the second and third square
+                    double x2_x3_diff = Math.pow((maxSquaresCoords[k] - maxSquaresCoords[l]), 2);
+                    double y2_y3_diff = Math.pow((maxSquaresCoords[k+1] - maxSquaresCoords[l+1]), 2);
+                    double D3 = Math.sqrt(x2_x3_diff + y2_y3_diff);
+
+                    // Total distance
+                    double D = (D1 + D2 + D3) / 3.0;
+                    if (D <= minDistance)
+                    {
+                        minDistance = D;
+
+                        // Delete previous min
+                        minCoordinates.delete(0, minCoordinates.length());
+                        minCoordinates.append("[(" + maxSquaresCoords[j] + "," + maxSquaresCoords[j+1] + "), " +
+                                              "(" + maxSquaresCoords[k] + "," + maxSquaresCoords[k+1] + "), " +
+                                              "(" + maxSquaresCoords[l] + "," + maxSquaresCoords[l+1] + ")]");
+                    }
+                }
+            }
+        }
+
+        System.out.println("Closest Coordinates of Max Squares: " + minCoordinates);
+        System.out.println("Distance: " + minDistance);
     }
 
     public static ArrayList<String> deepClone(ArrayList<String> list)
@@ -120,12 +186,12 @@ public class Carres
         return 0;
     }
 
-    public static void addAllSquaresCoords(String cell,
-                                           int i,
-                                           int j,
-                                           HashMap<String, ArrayList<String>> visitedSquaresCoords,
-                                           ArrayList<ArrayList<String>> squares,
-                                           HashMap<String, Integer> squaresSizes)
+    public static void calculateCellSquares(String cell,
+                                            int i,
+                                            int j,
+                                            HashMap<String, ArrayList<String>> visitedSquaresCoords,
+                                            ArrayList<ArrayList<String>> squares,
+                                            HashMap<String, Integer> squaresSizes)
     {
             char digit;
             while (hasMoreDigits(cell))
@@ -163,6 +229,5 @@ public class Carres
                     squaresSizes.put(String.valueOf(digit), squareSize);
                 }
             }
-
     }
 }
