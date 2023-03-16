@@ -48,8 +48,8 @@ public class Carres
             for (String coordinate : coordinates)
             {
                 String[] splitted = coordinate.split(",");
-                maxSquaresCoords[i] = Integer.parseInt(splitted[0]);
-                maxSquaresCoords[i+1] = Integer.parseInt(splitted[1]);
+                maxSquaresCoords[i] = Integer.parseInt(splitted[0]); // x coordinate (even number index)
+                maxSquaresCoords[i+1] = Integer.parseInt(splitted[1]); // y coordinate (odd number index)
                 i = i + 2;
             }
         }
