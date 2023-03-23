@@ -16,7 +16,7 @@ public class Carres
 
         /* Each square <String> has a list of 4 coordinates <ArrayList<String>>
          ["x11, y11", "x12, y12", "x13, y13", "x14, y14"]
-        - visitedSquaresCoords = the squares we have visited
+        - visitedSquaresCoords = the coordinates of the squares we have visited
         - squaresSizes = the corresponding sizes of those squares */
         var visitedSquaresCoords = new HashMap<String, ArrayList<String>>();
         var squaresSizes = new HashMap<String, Integer>();
