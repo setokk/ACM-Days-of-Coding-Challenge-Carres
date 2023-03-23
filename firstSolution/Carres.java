@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Carres
 {
@@ -11,38 +10,41 @@ public class Carres
 
     public static void main(String[] args)
     {
+
+        // Get input into a 2D array
         var squares = getInput(args[0]);
 
-
-                                // Algorithm start //
-        // Each square <String> has a list of 4 coordinates <ArrayList<String>>
-        // ["x11, y11", "x12, y12", "x13, y13", "x14, y14"]
+        /* Each square <String> has a list of 4 coordinates <ArrayList<String>>
+         ["x11, y11", "x12, y12", "x13, y13", "x14, y14"]
+        - visitedSquaresCoords = the squares we have visited
+        - squaresSizes = the corresponding sizes of those squares */
         var visitedSquaresCoords = new HashMap<String, ArrayList<String>>();
         var squaresSizes = new HashMap<String, Integer>();
 
+
+        /* Loop though the squares and get the squares with their corresponding sizes */
         for (int i = 0; i < squares.size(); i++)
         {
             var row = squares.get(i);
-
             for (int j = 0; j < row.size(); j++)
             {
                 String cell = row.get(j);
-                calculateCellSquares(cell, i, j, visitedSquaresCoords, squares, squaresSizes);
+                getSquaresFromCell(cell, i, j, visitedSquaresCoords, squares, squaresSizes);
             }
         }
 
         // Sort based on square sizes (get the 3 highest)
-        List<String> keys = squaresSizes
-                    .entrySet()
-                    .stream()
-                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                    .limit(3).map(Map.Entry::getKey)
-                    .toList();
+        List<String> maxSquares = squaresSizes
+                        .entrySet()
+                        .stream()
+                        .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                        .limit(3).map(Map.Entry::getKey)
+                        .toList();
 
         // Get the three squares' coordinates and find the min
         int[] maxSquaresCoords = new int[24];
         int i = 0;
-        for (String key : keys)
+        for (String key : maxSquares)
         {
             var coordinates = visitedSquaresCoords.get(key);
             for (String coordinate : coordinates)
@@ -186,12 +188,12 @@ public class Carres
         return 0;
     }
 
-    public static void calculateCellSquares(String cell,
-                                            int i,
-                                            int j,
-                                            HashMap<String, ArrayList<String>> visitedSquaresCoords,
-                                            ArrayList<ArrayList<String>> squares,
-                                            HashMap<String, Integer> squaresSizes)
+    public static void getSquaresFromCell(String cell,
+                                          int i,
+                                          int j,
+                                          HashMap<String, ArrayList<String>> visitedSquaresCoords,
+                                          ArrayList<ArrayList<String>> squares,
+                                          HashMap<String, Integer> squaresSizes)
     {
             char digit;
             while (hasMoreDigits(cell))
