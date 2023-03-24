@@ -16,9 +16,9 @@ public class Carres
 
         /* Each square <String> has a list of 4 coordinates <ArrayList<String>>
          ["x11, y11", "x12, y12", "x13, y13", "x14, y14"]
-        - visitedSquaresCoords = the coordinates of the squares we have visited
+        - squaresCoords = the coordinates of the squares we have visited
         - squaresSizes = the corresponding sizes of those squares */
-        var visitedSquaresCoords = new HashMap<String, ArrayList<String>>();
+        var squaresCoords = new HashMap<String, ArrayList<String>>();
         var squaresSizes = new HashMap<String, Integer>();
 
 
@@ -29,7 +29,7 @@ public class Carres
             for (int j = 0; j < row.size(); j++)
             {
                 String cell = row.get(j);
-                getSquaresFromCell(cell, i, j, visitedSquaresCoords, squares, squaresSizes);
+                getSquaresFromCell(cell, i, j, squaresCoords, squares, squaresSizes);
             }
         }
 
@@ -46,7 +46,7 @@ public class Carres
         int i = 0;
         for (String key : maxSquares)
         {
-            var coordinates = visitedSquaresCoords.get(key);
+            var coordinates = squaresCoords.get(key);
             for (String coordinate : coordinates)
             {
                 String[] splitted = coordinate.split(",");
@@ -163,9 +163,9 @@ public class Carres
 
     public static boolean isNotVisited(char digit,
                                         HashMap<String, ArrayList<String>>
-                                                visitedSquaresCoords)
+                                                squaresCoords)
     {
-        return (!visitedSquaresCoords.containsKey(String.valueOf(digit)));
+        return (!squaresCoords.containsKey(String.valueOf(digit)));
     }
 
 
@@ -174,14 +174,12 @@ public class Carres
                                   int j,
                                   ArrayList<ArrayList<String>> squares)
     {
-        int initial_index = j;
-        while (j + 1 < squares.get(i).size())
+        int start_index = j;
+        while (++j < squares.get(i).size())
         {
-            j++;
-
             if (squares.get(i).get(j).contains(String.valueOf(digit)))
             {
-                return Math.abs(initial_index - j) + 1; // Size
+                return Math.abs(start_index - j) + 1; // Size
             }
         }
 
@@ -191,7 +189,7 @@ public class Carres
     public static void getSquaresFromCell(String cell,
                                           int i,
                                           int j,
-                                          HashMap<String, ArrayList<String>> visitedSquaresCoords,
+                                          HashMap<String, ArrayList<String>> squaresCoords,
                                           ArrayList<ArrayList<String>> squares,
                                           HashMap<String, Integer> squaresSizes)
     {
@@ -200,7 +198,7 @@ public class Carres
             {
                 digit = getNextDigit(cell);
                 if (digit != EMPTY &&
-                        isNotVisited(digit, visitedSquaresCoords))
+                        isNotVisited(digit, squaresCoords))
                 {
                     String upLeftCoord = "";
                     String downLeftCoord = "";
@@ -227,7 +225,7 @@ public class Carres
                     coords.add(upRightCoord);
                     coords.add(downRightCoord);
 
-                    visitedSquaresCoords.put(String.valueOf(digit), coords);
+                    squaresCoords.put(String.valueOf(digit), coords);
                     squaresSizes.put(String.valueOf(digit), squareSize);
                 }
             }
