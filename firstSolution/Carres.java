@@ -174,14 +174,12 @@ public class Carres
                                   int j,
                                   ArrayList<ArrayList<String>> squares)
     {
-        int initial_index = j;
-        while (j + 1 < squares.get(i).size())
+        int start_index = j;
+        while (++j < squares.get(i).size())
         {
-            j++;
-
             if (squares.get(i).get(j).contains(String.valueOf(digit)))
             {
-                return Math.abs(initial_index - j) + 1; // Size
+                return Math.abs(start_index - j) + 1; // Size
             }
         }
 
